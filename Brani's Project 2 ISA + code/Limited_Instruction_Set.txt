@@ -1,0 +1,46 @@
+
+**Instruction Set Architecture for the Limited Instruction Set**
+
+ADD 100 xx, yy			// Add
+		Rx  Ry
+
+LWD 001 xx, yy 			//Load word
+	   Rx  Ry
+
+SWD 011 xx, yy			//Store word
+	   Rx, Ry
+
+SLE 110 xx, yy			// Set less than
+	    Rx  Ry
+
+INIT 101 xx, yy			//Init to const
+		Rx	const
+
+XOR	0001 x, yy			
+
+ADDI 111 xx, yy			//Add immediate value
+		 Rx  constant
+		 (constant cannot be 0)
+
+ADDN 111 11 00
+(Add negative one to r3)
+
+JIF 010 xxxx			// Jump if
+		constant
+**If r3 == 1 jump (PC = PC + constant)**
+**else PC = PC + 1**
+
+HLT	000 00 00
+
+SLER 0000 xx, y		//Set less than or equal to where Ry is the value of a register
+		 Rx	 Ry (must be r0)
+		 (Rx cannot be r1)
+
+SUBR0 0000 0, yy
+			  Ry 
+
+CNTR0 0001 00 0		//Count the number of bits in r0 and place this value in r3	
+		   r0
+
+HLT	000 11 11		// Halt program/end it
+
