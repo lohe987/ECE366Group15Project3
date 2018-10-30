@@ -6,7 +6,7 @@ output_file = open("program1_disassembled.lis", "w")
 output = "\n"
 
 for line in input_file:
-	print output
+	print (output)
 	output_file.write(output)
 
 	wrongOp = False
@@ -14,7 +14,7 @@ for line in input_file:
 		continue
 
 	line = line.replace("\n", "")
-	print "Machine code: ", line
+	print ("Machine code: ", line)
 
 	op_bin = line[1:8]
 	if (op_bin == "0000000"):
@@ -114,6 +114,6 @@ for line in input_file:
 
 		output = op + " " + const + " //If r3 = 1 then jump (PC = PC + imm)\n\t//Else do nothing\n"
 		
-	print output
+	print (output)
 	output_file.write(output)
 
