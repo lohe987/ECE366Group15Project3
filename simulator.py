@@ -4,6 +4,126 @@ Created on Tue Oct 30 14:17:41 2018
 
 @author: USER
 """
+def simulate(I,Nsteps,debug_mode,Memory):
+    print("ECE366 Fall 2018 ISA Design: Simulator")
+    print()
+    PC = 0              # Program-counter
+    DIC = 0
+    Reg = [0,0,0,0]     # 4 registers, init to all 0
+    print("******** Simulation starts *********")
+    finished = False
+    while(not(finished)):
+        fetch = I[PC]
+        DIC += 1
+        if(debug_mode):
+            print(fetch)
+        fetch = fetch.replace("R","")       # Delete all the 'R' to make things simpler
+        if (fetch[0:4] == "init"):
+            fetch = fetch.replace("init ","")
+            fetch = fetch.split(",")
+            R = int(fetch[0])
+            imm = int(fetch[1])
+            Reg[R] = imm
+            PC += 1
+        elif (fetch[0:4] == "addi"):
+            fetch = fetch.replace("addi ","")
+            fetch = fetch.split(",")
+            R = int(fetch[0])
+            imm = int(fetch[1])
+            Reg[R] = Reg[R] + imm
+            PC += 1
+        elif (fetch[0:4] == "add "):
+            fetch = fetch.replace("add ","")
+            fetch = fetch.split(",")
+            Rx = int(fetch[0])
+            Ry = int(fetch[1])
+            Reg[Rx] = Reg[Rx] + Reg[Ry]
+            PC += 1
+        elif (fetch[0:4] == "sub "):
+            fetch = fetch.replace("sub ","")
+            fetch = fetch.split(",")
+            Rx = int(fetch[0])
+            Ry = int(fetch[1])
+            Reg[Rx] = Reg[Rx] - Reg[Ry]
+            PC += 1
+        elif (fetch[0:4] == "xor "):
+            fetch = fetch.replace("xor ","")
+            fetch = fetch.split(",")      
+            Rx = int(fetch[0])
+            Ry = int(fetch[1])
+            Reg[Rx] = Reg[Rx] ^ Reg[Ry]
+            PC += 1
+        elif (fetch[0:4] == "load"):
+            fetch = fetch.replace("load ","")
+            fetch = fetch.replace("(","")
+            fetch = fetch.replace(")","")
+            fetch = fetch.split(",")
+            Rx = int(fetch[0])
+            Ry = int(fetch[1])
+            Reg[Rx] = Memory[Ry]
+            PC += 1
+        elif (fetch[0:4] == "stre"):
+            fetch = fetch.replace("stre ","")
+            fetch = fetch.replace("(","")
+            fetch = fetch.replace(")","")
+            fetch = fetch.split(",")
+            Rx = int(fetch[0])
+            Ry = int(fetch[1])
+            Memory[Reg[Ry]] = Reg[Rx]
+            PC += 1
+        elif (fetch[0:4] == "slt0"):  # why "slt0" instead of "sltR0" ? 
+                                    # --> because all the 'R' is deleted at fetch to make things simplier. 
+            fetch = fetch.replace("slt0 ","")
+            fetch = fetch.split(",")
+            Rx = int(fetch[0])
+            Ry = int(fetch[1])
+            if( Reg[Rx] < Reg[Ry] ):
+                Reg[0] = 1
+            else:
+                Reg[0] = 0
+            PC += 1
+        elif (fetch[0:4] == "bez0"):
+            fetch = fetch.replace("bez0 ","")
+            fetch = fetch.split(",")
+            imm = int(fetch[0])
+            if ( Reg[0] == 0):
+                PC = PC + imm
+            else:
+                PC += 1
+        elif (fetch[0:4] == "jump"):
+            fetch = fetch.replace("jump ","")
+            fetch = fetch.split(",")
+            imm = int(fetch[0])
+            if(imm == 0):
+                finished = True
+            else:
+                PC = PC + imm
+            
+        elif(fetch[0:6] == "finish"):
+            finished = True
+        if(debug_mode):
+            if ( (DIC % Nsteps) == 0): # print stats every Nsteps
+                print("Registers R0-R3: ", Reg)
+                print("Program Counter : ",PC)
+                #print("Memory: ",Memory)   # Dont print memory atm. 
+                                            # Too much cluster
+                input("Press any key to continue")
+                print()
+        else:
+            continue
+        
+    print("******** Simulation finished *********")
+    print("Dynamic Instr Count: ",DIC)
+    print("Registers R0-R3: ",Reg)
+    #print("Memory :",Memory)
+
+    data = open("d_mem.txt","w")    # Write data back into d_mem.txt
+    for i in range(len(Memory)):
+        
+        data.write(format(Memory[i],"016b"))
+        data.write("\n")
+        data.close()
+    
 def disassemble(I,Nlines):
     input_file = open("LIS_machine_code_program1.txt", "r")
     output_file = open("program1_disassembled.lis", "w")
@@ -127,10 +247,10 @@ def assemble(I,Nlines):
     output_file = open("LIS_machine_code_program1.txt", "w")
     memSection = False
     codeSection = False
-    commentHere = False
+    #commentHere = False
     output = ""
     memory = []
-    jumpMarkers = dict()
+    #jumpMarkers = dict()
     def TwosComplement(num, numBits):
         if (num < 0):
             num = (1 << numBits) + num
