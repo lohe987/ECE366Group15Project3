@@ -2,9 +2,9 @@
 """
 Created on Tue Oct 30 14:17:41 2018
 
-@author: USER
+@author: Kevin Calva
 """
-def simulate(I,Nsteps,Memory):
+def simulate(I,Memory):
     print("ECE366 Fall 2018 ISA Design: Simulator")
     print()
     PC = 0              # Program-counter
@@ -12,16 +12,6 @@ def simulate(I,Nsteps,Memory):
     Reg = [0,0,0,0]     # 4 registers, init to all 0
     print("******** Simulation starts *********")
     finished = False
-    input_prog1 = open("p3_group_15_p1_imem.txt", "r")
-    input_prog2 = open("p3_group_15_p2_imem.txt", "r")
-    input_pattA = open("p3_group_15_dmem_A.txt", "r")
-    input_pattB = open("p3_group_15_dmem_B.txt", "r")
-    input_pattC = open("p3_group_15_dmem_C.txt", "r")
-    input_pattD = open("p3_group_15_dmem_D.txt", "r")
-    output_pattA = open("p3_group_15_dmem_A.txt", "w")
-    output_pattB = open("p3_group_15_dmem_B.txt", "w")
-    output_pattC = open("p3_group_15_dmem_C.txt", "w")
-    output_pattD = open("p3_group_15_dmem_D.txt", "w")
     while(not(finished)):
         fetch = I[PC]
         DIC += 1
@@ -29,86 +19,101 @@ def simulate(I,Nsteps,Memory):
             #print(fetch)
         #fetch = fetch.replace("R","")       # Delete all the 'R' to make things simpler
         if (fetch[1:4] == "101"):
-            op  = "INIT"
-            rx = str(int(fetch[4:6], 2))
-            const = str(int(fetch[6:8], 2))
-            Reg[rx] = const
-            output = op + " r" + rx + ", " + const + " //rx = imm\n"
-            PC += 1
+            #op  = "INIT"
+            rx = int(fetch[4:6], 2)
+            const = int(fetch[6:8], 2)
+            Reg[rx] = const #Rx = const
+            PC += 1 
             
         elif (fetch[1:4] == "111"):
-            op = "ADDI"
-            rx = str(int(fetch[4:6], 2))
-            const = str(int(fetch[6:8], 2))
-            Reg[rx] = rx + const
-            output = op + " r" + rx + ", " + const + " //rx = rx + imm\n"
+            #op = "ADDI"
+            rx = int(fetch[4:6], 2)
+            const = int(fetch[6:8], 2)
+            Reg[rx] = Reg[rx] + const #Rx = Rx + const
             PC += 1
 
         elif (fetch[1:4] == "100"):
-            op = "ADD"	
-            rx = str(int(fetch[4:6], 2))
-            ry = str(int(fetch[6:8], 2))
-            Reg[rx] = rx + ry
-            output = op + " r" + rx + ", " + ry + " //rx = rx + ry\n"
+            #op = "ADD"	
+            rx = int(fetch[4:6], 2)
+            ry = int(fetch[6:8], 2)
+            Reg[rx] = Reg[rx] + Reg[ry] #Rx = Rx +Ry
             PC += 1
             
-        elif (fetch[1:4] == "010 "):    #jif
-            op = "JIF"
-            const = str(int(fetch[4:8], 4))
-            PC = PC + const
-        elif (fetch[1:4] == "001 "):
-            op = "lw"      
+        elif (fetch[1:6] == "00000"):
+            #op = "SUBR0"
+            ry = int(fetch[6:8], 2)
+            Reg[0] = Reg[0] - Reg[ry] #R0 = R0 -Ry
+            PC += 1
+			
+        elif (fetch[1:5] == "0001"):
+            #op = "XOR"
+            rx = int(fetch[5:6], 2)
+            ry = int(fetch[6:8], 2) 
+            Reg[rx] = Reg[rx] ^ Reg[ry] #Rx = Rx XOR Ry
+            PC += 1
+
+        elif (fetch[1:4] == "001"):
+            #op = "LWD"
+            rx = int(fetch[4:6], 2)
+            ry = int(fetch[6:8], 2)
+            Reg[rx] = Memory[Reg[ry]] #Rx <- M[Ry]
+            PC +=1
+
+        elif (fetch[1:4] == "011"):
+            #op = "SWD"
+            rx = int(fetch[4:6], 2)
+            ry = int(fetch[6:8], 2)
+            Memory[Reg[ry]] = Reg[rx]  #Rx -> M[ry]
+            PC += 1
             
-            PC += 1
-        elif (fetch[0:4] == "load"):
-            fetch = fetch.replace("load ","")
-            fetch = fetch.replace("(","")
-            fetch = fetch.replace(")","")
-            fetch = fetch.split(",")
-            Rx = int(fetch[0])
-            Ry = int(fetch[1])
-            Reg[Rx] = Memory[Ry]
-            PC += 1
-        elif (fetch[0:4] == "stre"):
-            fetch = fetch.replace("stre ","")
-            fetch = fetch.replace("(","")
-            fetch = fetch.replace(")","")
-            fetch = fetch.split(",")
-            Rx = int(fetch[0])
-            Ry = int(fetch[1])
-            Memory[Reg[Ry]] = Reg[Rx]
-            PC += 1
-        elif (fetch[0:4] == "slt0"):  # why "slt0" instead of "sltR0" ? 
-                                    # --> because all the 'R' is deleted at fetch to make things simplier. 
-            fetch = fetch.replace("slt0 ","")
-            fetch = fetch.split(",")
-            Rx = int(fetch[0])
-            Ry = int(fetch[1])
-            if( Reg[Rx] < Reg[Ry] ):
-                Reg[0] = 1
+        elif (fetch[1:4] == "110"):   
+            #op = "SLE"
+            rx = int(fetch[4:6], 2)
+            ry = int(fetch[6:8], 2)
+            if( Reg[rx] < Reg[ry] ): #Set less than (if Rx < Ry) Rx = 1  
+                Reg[rx] = 1 
             else:
-                Reg[0] = 0
+                Reg[rx] = 0
             PC += 1
-        elif (fetch[0:4] == "bez0"):
-            fetch = fetch.replace("bez0 ","")
-            fetch = fetch.split(",")
-            imm = int(fetch[0])
-            if ( Reg[0] == 0):
-                PC = PC + imm
+        
+        elif (fetch[1:8] == "1111100"):
+            #op = "ADDN"
+            #(Add negative one to r3)
+            Reg[3] = Reg[3] - 1 #R3 = R3 + (-1)
+            PC += 1
+        
+        elif (fetch[1:8] == "0001000"):
+            #op = "CNTR0"
+            output = op + " //Count the number of 1's in r0\n"
+            Reg[3] = Reg[0]
+            PC +=1
+         
+        elif (fetch[1:5] == "0000"):
+            #op = "SLER"
+            rx = int(fetch[5:7], 2)
+            ry = int(fetch[7], 2)
+            if(rx == 1):
+                print("Rx CANNOT BE R1")
+            if(ry != 0):
+                print("Ry HAS TO BE R0!")
+            if(Reg[rx] <= Reg[ry]):
+                Reg[rx] = 1
+            else:
+                Reg[rx] = 0
+            PC +=1
+            
+        elif (fetch[1:4] == "010"):
+            #op = "JIF"
+            const = int(fetch[5:8], 2)
+            if(Reg[3] == 1):
+                PC = PC + const
             else:
                 PC += 1
-        elif (fetch[0:4] == "jump"):
-            fetch = fetch.replace("jump ","")
-            fetch = fetch.split(",")
-            imm = int(fetch[0])
-            if(imm == 0):
-                finished = True
-            else:
-                PC = PC + imm
-            
-        elif(fetch[0:8] == "00000000"):
-            op = "HLT"
-            finished = True
+        
+        elif(fetch[1:8] == "0000000"):
+            #op = "HLT"
+            print("HALT")
+            finished = False
             
 #        if(debug_mode):
 #            if ( (DIC % Nsteps) == 0): # print stats every Nsteps
@@ -126,7 +131,7 @@ def simulate(I,Nsteps,Memory):
     print("Registers R0-R3: ",Reg)
     #print("Memory :",Memory)
 
-    data = open("d_mem.txt","w")    # Write data back into d_mem.txt
+    data = open("p3_group_15_dmem_A.txt","w")    # Write data back into d_mem.txt
     for i in range(len(Memory)):
         
         data.write(format(Memory[i],"016b"))
@@ -134,11 +139,11 @@ def simulate(I,Nsteps,Memory):
         data.close()
         
 def main():
-    instr_file = open("p3_group_15_p1_imem.txt","r") #this is the machine code that has the instructions for prog 1
+    instr_file = open("p3._group_15_p1_imem.txt","r") #this is the machine code that has the instructions for prog 1
     data_file = open("p3_group_15_dmem_A.txt","r") #this is the machine code of data that professor provided 
     Memory = [] #the data will be stored in this
     #debug_mode = False  # is machine in debug mode?  
-    Nsteps = 3          # How many cycle to run before output statistics
+    #Nsteps = 3          # How many cycle to run before output statistics
     Nlines = 0          # How many instrs total in input.txt  
     Instruction = []    # all instructions will be stored here
    
@@ -155,7 +160,7 @@ def main():
             continue
         Memory.append(int(line,2))
     
-    simulate(Instruction,Nsteps,Memory)
+    simulate(Instruction,Memory)
     
     instr_file.close()
     data_file.close()
