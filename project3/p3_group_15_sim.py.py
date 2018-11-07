@@ -12,6 +12,16 @@ def simulate(I,Nsteps,Memory):
     Reg = [0,0,0,0]     # 4 registers, init to all 0
     print("******** Simulation starts *********")
     finished = False
+    input_prog1 = open("p3_group_15_p1_imem.txt", "r")
+    input_prog2 = open("p3_group_15_p2_imem.txt", "r")
+    input_pattA = open("p3_group_15_dmem_A.txt", "r")
+    input_pattB = open("p3_group_15_dmem_B.txt", "r")
+    input_pattC = open("p3_group_15_dmem_C.txt", "r")
+    input_pattD = open("p3_group_15_dmem_D.txt", "r")
+    output_pattA = open("p3_group_15_dmem_A.txt", "w")
+    output_pattB = open("p3_group_15_dmem_B.txt", "w")
+    output_pattC = open("p3_group_15_dmem_C.txt", "w")
+    output_pattD = open("p3_group_15_dmem_D.txt", "w")
     while(not(finished)):
         fetch = I[PC]
         DIC += 1
