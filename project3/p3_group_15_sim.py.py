@@ -32,6 +32,7 @@ def simulate(I,Nsteps,Memory):
             op  = "INIT"
             rx = str(int(fetch[4:6], 2))
             const = str(int(fetch[6:8], 2))
+            Reg[rx] = const
             output = op + " r" + rx + ", " + const + " //rx = imm\n"
             PC += 1
             
@@ -39,6 +40,7 @@ def simulate(I,Nsteps,Memory):
             op = "ADDI"
             rx = str(int(fetch[4:6], 2))
             const = str(int(fetch[6:8], 2))
+            Reg[rx] = rx + const
             output = op + " r" + rx + ", " + const + " //rx = rx + imm\n"
             PC += 1
 
@@ -46,22 +48,17 @@ def simulate(I,Nsteps,Memory):
             op = "ADD"	
             rx = str(int(fetch[4:6], 2))
             ry = str(int(fetch[6:8], 2))
+            Reg[rx] = rx + ry
             output = op + " r" + rx + ", " + ry + " //rx = rx + ry\n"
             PC += 1
             
-        elif (fetch[0:4] == "sub "):
-            fetch = fetch.replace("sub ","")
-            fetch = fetch.split(",")
-            Rx = int(fetch[0])
-            Ry = int(fetch[1])
-            Reg[Rx] = Reg[Rx] - Reg[Ry]
-            PC += 1
-        elif (fetch[0:4] == "xor "):
-            fetch = fetch.replace("xor ","")
-            fetch = fetch.split(",")      
-            Rx = int(fetch[0])
-            Ry = int(fetch[1])
-            Reg[Rx] = Reg[Rx] ^ Reg[Ry]
+        elif (fetch[1:4] == "010 "):    #jif
+            op = "JIF"
+            const = str(int(fetch[4:8], 4))
+            PC = PC + const
+        elif (fetch[1:4] == "001 "):
+            op = "lw"      
+            
             PC += 1
         elif (fetch[0:4] == "load"):
             fetch = fetch.replace("load ","")
