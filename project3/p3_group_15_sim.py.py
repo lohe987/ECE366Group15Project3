@@ -4,7 +4,7 @@ Created on Tue Oct 30 14:17:41 2018
 
 @author: Kevin Calva
 """
-def simulate(I,Memory):
+def simulate(I,Nlines,Memory):
     print("ECE366 Fall 2018 ISA Design: Simulator")
     print()
     PC = 0              # Program-counter
@@ -14,6 +14,8 @@ def simulate(I,Memory):
     finished = False
     while(not(finished)):
         fetch = I[PC]
+        if(PC > Nlines - 1):
+            finished = True
         DIC += 1
         #if(debug_mode):
             #print(fetch)
@@ -84,8 +86,11 @@ def simulate(I,Memory):
         
         elif (fetch[1:8] == "0001000"):
             #op = "CNTR0"
-            output = op + " //Count the number of 1's in r0\n"
-            Reg[3] = Reg[0]
+            x = Reg[0]
+            Reg[3] = 0
+            while(x > 0):
+                Reg[3] += 1
+                x = x & (x-1)
             PC +=1
          
         elif (fetch[1:5] == "0000"):
@@ -113,7 +118,7 @@ def simulate(I,Memory):
         elif(fetch[1:8] == "0000000"):
             #op = "HLT"
             print("HALT")
-            finished = False
+            finished = True
             
 #        if(debug_mode):
 #            if ( (DIC % Nsteps) == 0): # print stats every Nsteps
@@ -139,7 +144,7 @@ def simulate(I,Memory):
         data.close()
         
 def main():
-    instr_file = open("p3._group_15_p1_imem.txt","r") #this is the machine code that has the instructions for prog 1
+    instr_file = open("p3_group_15_p1_imem.txt","r") #this is the machine code that has the instructions for prog 1
     data_file = open("p3_group_15_dmem_A.txt","r") #this is the machine code of data that professor provided 
     Memory = [] #the data will be stored in this
     #debug_mode = False  # is machine in debug mode?  
@@ -162,10 +167,12 @@ def main():
             continue
         Memory.append(int(line,2))
     
-    simulate(Instruction,Memory)
+    simulate(Instruction,Nlines,Memory)
     Nlines = 0;
+    instr_file.close()
+    data_file.close()
     print("Program 1 complete. Now Begins Program 2: \n")
-    instr_file = open("p3._group_15_p2_imem.txt","r") #this is the machine code that has the instructions for prog 2
+    instr_file = open("p3_group_15_p2_imem.txt","r") #this is the machine code that has the instructions for prog 2
     data_file = open("p3_group_15_dmem_A.txt","r") #this is the machine code of data that professor provided
 
     for line in instr_file: # Read in instr
@@ -178,7 +185,7 @@ def main():
         if (line == "\n" or line[0] == '#'):
             continue
         Memory2.append(int(line,2))
-    simulate(Instruction2,Memory)
+    simulate(Instruction2,Nlines,Memory2)
     
     instr_file.close()
     data_file.close()
