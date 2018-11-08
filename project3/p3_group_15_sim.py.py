@@ -146,6 +146,8 @@ def main():
     #Nsteps = 3          # How many cycle to run before output statistics
     Nlines = 0          # How many instrs total in input.txt  
     Instruction = []    # all instructions will be stored here
+    Instruction2 = []   # All Instructions for program 2 are stored here
+    Memory2 = []        # Memory for program 2 is stored here
    
     #Simulation                       
     for line in instr_file: # Read in instr 
@@ -161,6 +163,22 @@ def main():
         Memory.append(int(line,2))
     
     simulate(Instruction,Memory)
+    Nlines = 0;
+    print("Program 1 complete. Now Begins Program 2: \n")
+    instr_file = open("p3._group_15_p2_imem.txt","r") #this is the machine code that has the instructions for prog 2
+    data_file = open("p3_group_15_dmem_A.txt","r") #this is the machine code of data that professor provided
+
+    for line in instr_file: # Read in instr
+        if (line == "\n" or line[0] == '#'):
+            continue
+        line = line.replace("\n", "")
+        Instruction2.append(line)
+        Nlines +=1
+    for line in data_file: # Read in data memory
+        if (line == "\n" or line[0] == '#'):
+            continue
+        Memory2.append(int(line,2))
+    simulate(Instruction2,Memory)
     
     instr_file.close()
     data_file.close()
