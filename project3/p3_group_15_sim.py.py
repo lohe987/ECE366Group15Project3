@@ -12,7 +12,6 @@ def simulate(I,Memory):
     Reg = [0,0,0,0]     # 4 registers, init to all 0
     print("******** Simulation starts *********")
     finished = False
-<<<<<<< HEAD
     while(finished != True):
         fetch = I[PC]
         DIC += 1
@@ -32,51 +31,12 @@ def simulate(I,Memory):
             #op = "CNTR0"
             Reg[3] = Reg[0]
             PC +=1
-=======
-    
-    print("This is fetch\n")
-    while(not(finished)):
-        fetch = I[PC]
-        print(I[PC])
-        DIC += 1
-        #if(debug_mode):
-            #print(fetch)
-        #fetch = fetch.replace("R","")       # Delete all the 'R' to make things simpler
-        if (fetch[1:4] == "101"):
-            op  = "INIT"
-            rx = int(fetch[4:6], 2)
-            const = int(fetch[6:8], 2)
-            Reg[rx] = const #Rx = const
-            PC += 1 
-            #print(op)
-        elif (fetch[1:4] == "111"):
-            op = "ADDI"
-            rx = int(fetch[4:6], 2)
-            if(fetch[6:8] == "11"):
-                const = -1
-            if(fetch[6:8] == "01"):
-                const = 1
-            else:
-                const = 0
-            Reg[rx] = Reg[rx] + const #Rx = Rx + const
-            PC += 1
-            #print(op)
-
-        elif (fetch[1:4] == "100"):
-            op = "ADD"	
-            rx = int(fetch[4:6], 2)
-            ry = int(fetch[6:8], 2)
-            Reg[rx] = Reg[rx] + Reg[ry] #Rx = Rx +Ry
-            PC += 1
-            #print(op)
->>>>>>> 8361aa068f3c614f94c3e153d8f76acc8469dc66
             
         elif (fetch[1:6] == "00000"):
             #op = "SUBR0"
             ry = int(fetch[6:8], 2)
             Reg[0] = Reg[0] - Reg[ry] #R0 = R0 -Ry
             PC += 1
-<<<<<<< HEAD
             
         elif (fetch[1:5] == "0001"):
             #op = "XOR"
@@ -113,17 +73,6 @@ def simulate(I,Memory):
             Reg[rx] = Reg[rx] + const #Rx = Rx + const
             PC += 1
 
-=======
-            #print(op)
-			
-        elif (fetch[1:5] == "0001"):
-            op = "XOR"
-            rx = int(fetch[5:6], 1)
-            ry = int(fetch[6:8], 2) 
-            Reg[rx] = Reg[rx] ^ Reg[ry] #Rx = Rx XOR Ry
-            PC += 1
-            #print(op)
->>>>>>> 8361aa068f3c614f94c3e153d8f76acc8469dc66
 
         elif (fetch[1:4] == "001"):
             #op = "LWD"
@@ -131,10 +80,6 @@ def simulate(I,Memory):
             ry = int(fetch[6:8], 2)
             Reg[rx] = Memory[ry] #Rx <- M[Ry]
             PC +=1
-<<<<<<< HEAD
-=======
-            #print(op)
->>>>>>> 8361aa068f3c614f94c3e153d8f76acc8469dc66
 
         elif (fetch[1:4] == "011"):
             #op = "SWD"
@@ -142,10 +87,6 @@ def simulate(I,Memory):
             ry = int(fetch[6:8], 2)
             Memory[Reg[ry]] = Reg[rx]  #Rx -> M[ry]
             PC += 1
-<<<<<<< HEAD
-=======
-            #print(op)
->>>>>>> 8361aa068f3c614f94c3e153d8f76acc8469dc66
             
         elif (fetch[1:4] == "110"):   
             #op = "SLE"
@@ -156,7 +97,6 @@ def simulate(I,Memory):
             else:
                 Reg[rx] = 0
             PC += 1
-<<<<<<< HEAD
             
         elif (fetch[1:4] == "101"):
             #op  = "INIT"
@@ -179,62 +119,6 @@ def simulate(I,Memory):
         
        
             
-=======
-            #print(op)
-        
-        elif (fetch[1:8] == "1111100"):
-            op = "ADDN"
-            #(Add negative one to r3)
-            Reg[3] = Reg[3] - 1 #R3 = R3 + (-1)
-            PC += 1
-            #print(op)
-        
-        elif (fetch[1:8] == "0001000"):
-            op = "CNTR0"
-            x = Reg[0]
-            Reg[3] = 0
-            while(x > 0):
-                Reg[3] += 1
-                x = x & (x-1)
-            PC +=1
-            #print(op)
-         
-        elif (fetch[1:5] == "0000"):
-            op = "SLER"
-            rx = int(fetch[5:7], 2)
-            ry = int(fetch[7], 2)
-            if(rx == 1):
-                print("Rx CANNOT BE R1")
-            if(ry != 0):
-                print("Ry HAS TO BE R0!")
-            if(Reg[rx] <= Reg[ry]):
-                Reg[rx] = 1
-            else:
-                Reg[rx] = 0
-            PC +=1
-            #print(op)
-            
-        elif (fetch[1:4] == "010"):
-            op = "JIF"
-            const = int(fetch[5:8], 3)
-            if(const == 0):
-                finished = True
-            if(fetch[4] == 1):
-                const = not(const) - 1
-            elif(Reg[3] == 1):
-                PC = PC + const
-            else:
-                PC = PC + 1
-            #print(op)
-        
-        elif(fetch[1:8] == "0000000"):
-            op = "HLT"
-            print(op)
-            print("0000000")
-            finished = True
-
-        
->>>>>>> 8361aa068f3c614f94c3e153d8f76acc8469dc66
 #        if(debug_mode):
 #            if ( (DIC % Nsteps) == 0): # print stats every Nsteps
 #                print("Registers R0-R3: ", Reg)
@@ -266,55 +150,20 @@ def main():
     #Nsteps = 3          # How many cycle to run before output statistics
     Nlines = 0          # How many instrs total in input.txt  
     Instruction = []    # all instructions will be stored here
-<<<<<<< HEAD
    
     #Simulation                       
-=======
-    Instruction2 = []   # All Instructions for program 2 are stored here
-    Memory2 = []        # Memory for program 2 is stored here
-    #Simulation
-    print("Here is the Instruction array")
->>>>>>> 8361aa068f3c614f94c3e153d8f76acc8469dc66
     for line in instr_file: # Read in instr 
         if (line == "\n" or line[0] =='#'):              # empty lines,comments ignored
             continue
         line = line.replace("\n","")
         Instruction.append(line)                        # Copy all instruction into a list
         Nlines +=1
-        
-        print(line)
 
     for line in data_file:  # Read in data memory
         if (line == "\n" or line[0] =='#'):              # empty lines,comments ignored
             continue
         Memory.append(int(line,2))
-<<<<<<< HEAD
     simulate(Instruction,Memory)
-=======
-        
-    simulate(Instruction,Nlines,Memory)
-    Nlines = 0;
-    instr_file.close()
-    data_file.close()
-
-    print("Program 1 complete. Now Begins Program 2: \n")
-
-
-    instr_file = open("p3_group_15_p2_imem.txt","r") #this is the machine code that has the instructions for prog 2
-    data_file = open("p3_group_15_dmem_A.txt","r") #this is the machine code of data that professor provided
-
-    for line in instr_file: # Read in instr
-        if (line == "\n" or line[0] == '#'):
-            continue
-        line = line.replace("\n", "")
-        Instruction2.append(line)
-        Nlines +=1
-    for line in data_file: # Read in data memory
-        if (line == "\n" or line[0] == '#'):
-            continue
-        Memory2.append(int(line,2))
-    simulate(Instruction2,Nlines,Memory2)
->>>>>>> 8361aa068f3c614f94c3e153d8f76acc8469dc66
     
     instr_file.close()
     data_file.close()
