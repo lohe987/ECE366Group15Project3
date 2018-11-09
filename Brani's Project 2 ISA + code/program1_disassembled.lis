@@ -1,0 +1,62 @@
+
+INIT r1, 1 //rx = imm
+INIT r2, 1 //rx = imm
+INIT r0, 0 //rx = imm
+INIT r3, 3 //rx = imm
+LWD r0, r3 //rx = M[ry]
+ADD r2, 3 //rx = rx + ry
+ADD r2, 3 //rx = rx + ry
+SLE r0, 0 //If rx < ry then r3 = 1
+	//Else r3 = 0
+JIF 6 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+JIF 6 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+JIF -4 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+JIF -4 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+INIT r3, 1 //rx = imm
+LWD r3, r3 //rx = M[ry]
+JIF -3 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+JIF -3 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+INIT r1, 2 //rx = imm
+SWD r0, r1 //M[ry] = rx
+JIF 5 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+JIF 5 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+JIF -7 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+JIF -7 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+SUBR0 r3 //r0 = r0 - ry
+INIT r3, 1 //rx = imm
+JIF -7 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+JIF -7 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+INIT r1, 2 //rx = imm
+LWD r1, r1 //rx = M[ry]
+INIT r0, 0 //rx = imm
+LWD r0, r0 //rx = M[ry]
+JIF -7 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+JIF -7 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+ADDI r0, 1 //rx = rx + imm
+INIT r3, 0 //rx = imm
+LWD r3, r3 //rx = M[ry]
+SLER r3, r0 //If rx < r0 then r3 = 1
+	//Else r3 = 0
+JIF 3 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+JIF 3 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+INIT r3, 1 //rx = imm
+JIF -7 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
+JIF -7 //If r3 = 1 then jump (PC = PC + imm)
+	//Else do nothing
