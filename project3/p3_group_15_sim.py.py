@@ -78,7 +78,7 @@ def simulate(I,Memory):
             #op = "LWD"
             rx = int(fetch[4:6], 2)
             ry = int(fetch[6:8], 2)
-            Reg[rx] = Memory[ry] #Rx <- M[Ry]
+            Reg[rx] = Memory[Reg[ry]] #Rx <- M[Ry]
             PC +=1
 
         elif (fetch[1:4] == "011"):
@@ -134,13 +134,13 @@ def simulate(I,Memory):
     print("Dynamic Instr Count: ",DIC)
     print("Registers R0-R3: ",Reg)
     #print("Memory :",Memory)
-
+    
     data = open("p3_group_15_dmem_A.txt","w")    # Write data back into d_mem.txt
     for i in range(len(Memory)):
-        
         data.write(format(Memory[i],"016b"))
         data.write("\n")
-        data.close()
+
+    data.close()
         
 def main():
     instr_file = open("p3_group_15_p1_imem.txt","r") #this is the machine code that has the instructions for prog 1
