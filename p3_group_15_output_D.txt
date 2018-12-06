@@ -1,0 +1,20 @@
+******** Simulation finished *********
+prog 1:
+Dynamic Instr Count:  18328
+Registers R0-R3:  [1736, 2, 594, 2455]
+MEM[0]: P              594
+MEM[1]: Q              2455
+MEM[2]: 6^P Mod Q      0000011011001000
+MEM[3]: Target Pattern 3855
+MEM[4]: Highest Score  13
+MEM[5]: Count          3
+
+prog 2:
+Dynamic Instr Count:  18379
+Registers R0-R3:  [5, 0, 13, 3]
+MEM[0]: P              594
+MEM[1]: Q              2455
+MEM[2]: 6^P Mod Q      1736
+MEM[3]: Target Pattern 3855
+MEM[4]: Highest Score  0000000000001101
+MEM[5]: Count          0000000000000011

@@ -1,0 +1,122 @@
+10010101    # $R1 = 0 + 1 = 1
+10010101    # $R1 = 1 + 1 = 2
+10010101    # $R1 = 2 + 1 = 3
+11010001    # $R0 = MEM[$R1] = MEM[3] = T
+11100001    # $R1 = 3 * 2 = 6
+10010101    # $R1 = 6 + 1 = 7
+01100001    # R1 = 14
+01100001    # R1 = 28
+01100001    # R1 = 56
+01100001    # R1 = 112
+00010110    # R1 = 110
+00010110    # R1 = 108
+00010110    # R1 = 106
+00010110    # R1 = 104
+00010110    # R1 = 102
+00010110    # R1 = 100
+01111000    # $SR0 = $R0 = T
+11111001    # $SR1 = $R1 = n
+10011001    # R2 = 1
+01100010    # R2 = 2
+01100010    # R2 = 4
+01100010    # R2 = 8
+00110101    # go to start_match
+01110001    #loop_match--$R1 = $SR1 = n
+00010111    # $R1 = n' = n - 1
+11111001    # $SR1 = $R1 = n
+10011001    # $R2 = addr of the next element in Pattern_Array
+01110100    #start_match--$R0 = 0
+00100001    # If 0 < n then $branch = 1, else $branch = 0
+01000100    # PC = PC + 4, go forward 4 instructions
+00110010    # jump to done
+10111000    #go to loop_match
+00110111    #jump to done
+10000010    # $R0 = $R2 = addr of an element in Pattern_Array
+11010010    # $R1 = Pattern_Array[$R0]
+11110000    # $R0 = $SR0 = T
+01100101    # $R0 = $R0 bitwise not xor (equivalence) $R1
+10110011    # PC = PC + 3, jump three instructions forward
+00111001    # go to loop_match
+00110101    #jump to done
+01110111    # $R3 = counter = 0
+11110101    # $R1 = 0
+00110011    # Go to start_count
+00111011    # go to loop_count
+00110101    # jump to done
+00110110    # go to start_count
+00011101    #loop_count--$R3 = counter = $R3 + 1
+01100000    #loop_no_count--$R0 = $R0 << 1
+10110100    # PC = PC + 4, jump 4 instructions forward
+10110111    # jump to done
+00111001    # go to loop_match
+00110110    # go to start_count
+00110101    # PC = PC + 5, jump 5 instructions forward
+10111001    # go to loop_count
+10111001    # go to loop_no_count
+10111011    #go to loop_match
+10110111    # jump to done
+11101000    #start_count--If $R0 == 0 then $branch = 1, else $branch = 0
+11000110    # go to count_done
+00100001    # If $R0 < 0 then $branch = 1, else $branch =  0
+11001001    #B loop_count
+00111001    #J loop_no_count
+00111001    #go to loop_match
+00110111    #go to done
+01110100    #count_done--$R0 = 0
+11110101    # $R1 = 0
+10000010    # $R0  = $R2 <- temporarily store the addr an element in the Pattern_Array
+10000111    # $R1 = $R3 <- move matched bit count
+10110011    # PC = PC + 3, jump two instructions forward
+00111001    # go to loop_match
+10110111    # go to done
+01110010    # $R2 = current best match score
+10101001    # If $R2 < $R1 then $branch = 1, else $branch = 0
+11000011    #B update_best_match
+10110100    # PC = PC + 4, jump two instructions forward
+00111010	  # go to loop_match
+00110110	  # go to update_best_match
+00110110	  # go to done
+11101110    # $R2 = -$R2
+00000110    # $R1 = $R1 - $R2
+10110100    # PC = PC + 4, jump two instructions forward
+00111010    # go to loop_match
+00110101    # go to update_best_match
+00110101    # go to done
+01101001    #If $R1 == 0 then $branch = 1, else $branch = 0
+01000101    # go to update_best_match_count
+10110111    # PC = PC +7, jump 7 instructions forward
+10110101    # go to update_best_match
+00110011    # go to done
+10111000    # go to loop_match
+00110110    # go to update_best_match_count
+10110111    # go to done
+10110111    # go to update_best_match
+11110110    #prep_loop--$R2 = 0
+10001000    # $R2 = addr of an element in the Pattern_Array
+00111010    #J loop_match
+00110111    # go to update_best_match_count
+00111100    # go to prep_loop
+00110111    # go to done
+11110110    #update_best_match--$R2 = 0
+00001001    # $R2 = 0 + $R1 = $R1
+11111010    # $SR2 = $R2, best_match_score updated
+10110100    # PC = PC + 4, jump two instructions forward
+10110101    # go to update_best_match_count
+00111001    # go to prep_loop
+10110111    # go to done
+01110111    # $R3 = 0
+01111011    # $SR3 = $R3 = 0, reset best_match_score
+11110011    #update_best_match_count--$R3 = $SR3 = best_match_count
+00011101    # $R3 = $R3 + 1
+01111011    # $SR3 = $R3, best_match_count updated
+00111001    # PC = PC - 7, go to prep_loop
+01110010    #done--$R2 = $SR2 = best_match_score
+11110011    # $R3 = $SR3 = best_match_count
+01110100    # $R0 = 0
+00010001    # $R0 = 0 + 1 = 1
+01100000    # $R0 = 1 * 2 = 2
+01100000    # $R0 = 2 * 2 = 4
+01011100    # MEM[$R0] = MEM[4] = S = $R2 = best matching score
+00010001    # $R0 = 4 + 1 = 5
+11011110    # MEM[$R0] = MEM[5] = C = $R3 = best matching count
+11111111    #END

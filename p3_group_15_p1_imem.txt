@@ -1,0 +1,32 @@
+11010100 	 # $R2 = MEM[$R0] = MEM[0] = P
+00010001   #$R0 = 1
+01010110   #$R3 = MEM[$R0] = MEM[1] = Q
+11111010   #$SR2 = $R2, Stash P to a special register
+10010101   #r1 = r1+ 1
+11110110   #$R2 = 0, Resets previous value
+01100000   #R0 = c*2= 2c
+10001000   #R2 = 0 + 2c = 2c
+01100000   #$R0 = 2c* 2 = 4c
+10001000   #R2 = 4c + 2c = 6c
+10110010   #PC = PC + 2, go down 2 instructions 
+00111001   #Go back to step 2
+01110100   #$R0 = 0
+10000010   #$R0 = $R2  = 6c
+11110110   #$R2 = 0
+10001011   #Note: $R3 is still Q, thus $R2 = 0  + $R3 = 0 + Q = Q
+11101110   #$R2 = -Q
+00110011   #PC = PC + 3, go to mod_loop
+00111001   #Go back to step 2
+10000010   #c <- c - Q
+10100011   #If c < Q then $branch = 1, else $branch = 0
+11000011   #If $branch =  1, move to step 4, else continue
+10111101   #Move back 3 instructions, (cond_update)
+10111011   #Go back to step 2
+01110010  #$R2 = $SR2 = P   Note:$SR2 is a special register
+10100110  #If p' < P then $branch = 1, else $branch = 0
+01001101  #Go back to step 2
+11110101  #$R1 = 0
+10010110  #R1 = -2
+11101101  #$R1 = 2
+01011001  #MEM[$R1] = MEM[2] + R = $R0 =c
+11111111  #Ends program
